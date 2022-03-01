@@ -1,25 +1,26 @@
 package com.alonsodelcid.pokemvvm.ui.pokelist
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.alonsodelcid.pokemvvm.R
+import com.alonsodelcid.pokemvvm.databinding.CardPokemonSearchBinding
+import com.alonsodelcid.pokemvvm.model.api.PokeResult
 import com.alonsodelcid.pokemvvm.model.api.Pokemon
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.card_pokemon_search.view.*
+
 
 class PokeListAdapter(val pokemonClick: (Int) -> Unit): RecyclerView.Adapter<PokeListAdapter.SearchViewHolder>() {
-    private var pokemonList: List<Pokemon> = emptyList()
-
-    fun setData(list: List<Pokemon>){
+    private var pokemonList: List<PokeResult> = emptyList<PokeResult>()
+    private lateinit var binding: CardPokemonSearchBinding
+    fun setData(list: List<PokeResult>) {
         pokemonList = list
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        return SearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.card_pokemon_search, parent,false))
+        binding = CardPokemonSearchBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return SearchViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -28,11 +29,12 @@ class PokeListAdapter(val pokemonClick: (Int) -> Unit): RecyclerView.Adapter<Pok
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val pokemon = pokemonList[position]
-        holder.itemView.pokemonText.text = "#${position + 1} - ${pokemon.name}"
-        Log.d("TAG", "onBindViewHolder: ${itemCount}")
+        binding.pokemonText.text = pokemon.name
         holder.itemView.setOnClickListener { pokemonClick(position + 1) }
-        Glide.with(holder.itemView.context).load(pokemon.sprites.frontDefault).into(holder.itemView.imageView2)
+        var picture = pokemon.url.getPicUrl()
+        Glide.with(holder.itemView.context).load(picture).into(binding.imageView2)
     }
 
-    class SearchViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    class SearchViewHolder(private val binding: CardPokemonSearchBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

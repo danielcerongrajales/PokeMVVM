@@ -1,5 +1,6 @@
 package com.alonsodelcid.pokemvvm.ui.pokelist
 
+import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alonsodelcid.pokemvvm.model.api.PokeApiResponse
@@ -12,6 +13,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
 class PokeListViewModel() : ViewModel() {
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://pokeapi.co/api/v2/")
@@ -22,6 +24,9 @@ class PokeListViewModel() : ViewModel() {
 
     val pokemonList = MutableLiveData<List<PokeResult>>()
     val pokemonInfo = MutableLiveData<Pokemon>()
+//    var lst = MutableLiveData<ArrayList<Pokemon>>()
+//    var newlist = arrayListOf<Pokemon>()
+
     fun getPokemonList(){
         val call = service.getPokemonList(100,0)
 
@@ -39,10 +44,10 @@ class PokeListViewModel() : ViewModel() {
 
         })
     }
-    fun getPokemonInfo(id: Int){
+    fun getPokemonInfo(id: Int) {
         val call = service.getPokemonInfo(id)
 
-        call.enqueue(object : Callback<Pokemon>{
+        call.enqueue(object : Callback<Pokemon> {
             override fun onResponse(call: Call<Pokemon>, response: Response<Pokemon>) {
                 response.body()?.let { pokemon ->
                     pokemonInfo.postValue(pokemon)
@@ -54,5 +59,10 @@ class PokeListViewModel() : ViewModel() {
             }
 
         })
-    }
+}
+//    fun add(blog: Pokemon){
+//        newlist.add(blog)
+//
+//        lst.value=newlist
+//    }
 }
